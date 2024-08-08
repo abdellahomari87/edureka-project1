@@ -1,4 +1,4 @@
-# Étape 1: Construire l'application avec Maven (facultatif si vous l'avez déjà fait)
+# Étape 1: Construire l'application avec Maven
 FROM maven:3.8.4-openjdk-17 AS build
 
 # Définissez le répertoire de travail dans le conteneur
@@ -21,7 +21,7 @@ FROM tomcat:10.1.10-jdk17-temurin-jammy
 RUN rm -rf /usr/local/tomcat/webapps/*
 
 # Copier le fichier WAR généré dans le dossier webapps de Tomcat
-COPY ABCtechnologies-1.0.war /usr/local/tomcat/webapps/
+COPY --from=build /app_project1/target/ABCtechnologies-1.0.war /usr/local/tomcat/webapps/
 
 # Exposer le port par défaut de Tomcat
 EXPOSE 8081
