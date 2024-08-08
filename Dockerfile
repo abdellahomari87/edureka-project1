@@ -21,10 +21,10 @@ FROM tomcat:10.1.10-jdk17-temurin-jammy
 RUN rm -rf /usr/local/tomcat/webapps/*
 
 # Copier le fichier WAR généré dans le dossier webapps de Tomcat
-COPY --from=build /app/target/*.war /usr/local/tomcat/webapps/
+COPY /home/abdellahomari88/jenkins_project1/ABC Technologies/target/ABCtechnologies-1.0.war /usr/local/tomcat/webapps/
 
 # Exposer le port par défaut de Tomcat
-EXPOSE 8080
+EXPOSE 8081
 
 # Démarrer Tomcat
 CMD ["catalina.sh", "run"]
