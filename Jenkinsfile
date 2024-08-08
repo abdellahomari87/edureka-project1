@@ -1,22 +1,18 @@
 pipeline {
-    agent none
+    agent any
     stages {
-        stage('Build') {
-            agent { label 'slave' } // Remplacez 'slave' par l'étiquette de votre nœud esclave
+        stage('Build Docker Image') {
             steps {
-                echo "Building on slave node"
-                // Ajoutez vos étapes de build ici
-                sh 'echo "Compiling the code"'
-                sh 'mvn clean install'
+                script {
+                    sh 'docker build -t omari87/myapp_project1:3 .'
+                }
             }
         }
-        stage('Test') {
-            agent { label 'slave' } // Remplacez 'slave' par l'étiquette de votre nœud esclave
+        stage('Run Docker Container') {
             steps {
-                echo "Testing on slave node"
-                // Ajoutez vos étapes de test ici
-                sh 'echo "Running tests"'
-                sh 'mvn test'
+                script {
+                    sh 'docker run -d -p 8081:8081 omari87/myapp_project1:3'
+                }
             }
         }
     }
