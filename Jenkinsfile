@@ -9,16 +9,16 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    timeout(time: 20, unit: 'MINUTES') { // augmentez le délai si nécessaire
+                    timeout(time: 20, unit: 'MINUTES') {
                         dockerImage = docker.build("omari87/1:latest")
-                    }    
+                    }
                 }
             }
         }
         stage('Push Docker Image') {
             steps {
                 script {
-                    docker.withRegistry('https://registry.hub.docker.com', '4fb48ccd-5e7c-4dac-ae3a-56a651c589e9') {
+                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-credentials') {
                         dockerImage.push()
                     }
                 }
