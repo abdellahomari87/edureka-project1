@@ -10,7 +10,7 @@ pipeline {
             steps {
                 script {
                     timeout(time: 20, unit: 'MINUTES') {
-                        dockerImage = docker.build("omari87/1:latest")
+                        dockerImage = docker.build("omari87/task3:latest")
                     }
                 }
             }
