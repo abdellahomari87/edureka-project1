@@ -1,17 +1,20 @@
 pipeline {
     agent any
+
     stages {
-        stage('Build Docker Image') {
+        stage('Checkout') {
             steps {
-                script {
-                    sh 'docker build -t omari87/myapp_project1:3 .'
-                }
+                git 'https://github.com/abdellahomari87/edureka-project1.git'
             }
         }
-        stage('Run Docker Container') {
+        stage('Run Ansible Playbook on EC2') {
             steps {
-                script {
-                    sh 'docker run -d -p 8081:8081 omari87/myapp_project1:3'
+                sshagent(['671c494a-7800-4187-a640-1c93f057a80f']) {
+                    sh '''
+                    ssh -o StrictHostKeyChecking=no -i /mnt/chromeos/MyFiles/Downloads/kubernetes-task.pem ec2-user@13.37.250.1 '
+                        ansible-playbook /home/ec2-user/deploy_kubernetes.yml -i /home/ec2-user/inventory
+                    '
+                    '''
                 }
             }
         }
