@@ -9,7 +9,9 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    dockerImage = docker.build("omari87/1:latest")
+                    timeout(time: 20, unit: 'MINUTES') { // augmentez le délai si nécessaire
+                        dockerImage = docker.build("omari87/1:latest")
+                    }    
                 }
             }
         }
