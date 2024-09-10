@@ -3,8 +3,8 @@ version: 0.2
 phases:
   install:
     commands:
-      - echo "Installing Docker..."
-      - apt-get update && apt-get install -y docker.io  # Installation de Docker dans l'environnement CodeBuild
+      - echo "Logging into Amazon ECR..."
+      - aws ecr get-login-password --region eu-west-3 | docker login --username AWS --password-stdin 600897147573.dkr.ecr.eu-west-3.amazonaws.com
   pre_build:
     commands:
       - echo "Logging into Amazon ECR..."
