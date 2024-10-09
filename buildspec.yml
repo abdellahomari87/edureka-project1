@@ -4,12 +4,11 @@ phases:
   install:
     commands:
       - echo Installing dependencies...
-      - yum install -y jq  # Ou utilisez "apt-get" si vous êtes sur une image Ubuntu
+      - apt-get update && apt-get install -y jq  # Utilisez cette ligne si vous avez une image basée sur Debian/Ubuntu
 
   pre_build:
     commands:
       - echo Logging into Amazon ECR...
-      # Utilisez la nouvelle commande pour obtenir le mot de passe d'authentification
       - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $REPOSITORY_URI
 
   build:
