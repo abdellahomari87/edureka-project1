@@ -4,24 +4,29 @@ phases:
   install:
     commands:
       - echo Installing dependencies...
-      - apt-get update && apt-get install -y jq
+      - yum install -y jq  # Ou utilisez "apt-get" si vous êtes sur une image Ubuntu
+
   pre_build:
     commands:
       - echo Logging into Amazon ECR...
-      - $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
+      # Utilisez la nouvelle commande pour obtenir le mot de passe d'authentification
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $REPOSITORY_URI
+
   build:
     commands:
       - echo Building the Docker image...
       - docker build -t $REPOSITORY_URI:latest .
       - echo Tagging the Docker image with the commit ID...
       - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$CODEBUILD_RESOLVED_SOURCE_VERSION
+
   post_build:
     commands:
       - echo Pushing the Docker image to ECR...
       - docker push $REPOSITORY_URI:latest
       - docker push $REPOSITORY_URI:$CODEBUILD_RESOLVED_SOURCE_VERSION
       - echo Creating imagedefinitions.json file...
-      - echo "[{\"name\":\"edureka2\",\"imageUri\":\"edureka2/edureka2\"}]" > imagedefinitions.json
+      - echo "[{\"name\":\"edureka2\",\"imageUri\":\"$REPOSITORY_URI:$CODEBUILD_RESOLVED_SOURCE_VERSION\"}]" > imagedefinitions.json
+
 artifacts:
   files:
     - imagedefinitions.json
