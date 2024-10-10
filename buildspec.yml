@@ -1,37 +1,24 @@
 version: 0.2
 
-env:
-  variables:
-    AWS_DEFAULT_REGION: "eu-west-3"  # Remplacez par votre région AWS
-    REPOSITORY_URI: "600897147573.dkr.ecr.eu-west-3.amazonaws.com/edureka2"  # Remplacez par l'URI correct du dépôt ECR
-
 phases:
   install:
     commands:
       - echo Installing dependencies...
-      - apt-get update && apt-get install -y jq  # Utilisez cette ligne si vous avez une image basée sur Debian/Ubuntu
-
+      - apt-get update && apt-get install -y jq
   pre_build:
     commands:
       - echo Logging into Amazon ECR...
-      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $REPOSITORY_URI
-
+      - $(aws ecr get-login-password --region us-west-1) | docker login --username AWS --password-stdin <your-ecr-uri>
   build:
     commands:
-      - echo Building the Docker image...
-      - docker build -t $REPOSITORY_URI:latest .
-      - echo Tagging the Docker image with the commit ID...
-      - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$CODEBUILD_RESOLVED_SOURCE_VERSION
-
+      - echo Build started on `date`
+      - docker build -t <your-ecr-uri>:latest .
+      - docker tag <your-ecr-uri>:latest <your-ecr-uri>:$CODEBUILD_RESOLVED_SOURCE_VERSION
   post_build:
     commands:
-      - echo Pushing the Docker image to ECR...
-      - docker push $REPOSITORY_URI:latest
-      - docker push $REPOSITORY_URI:$CODEBUILD_RESOLVED_SOURCE_VERSION
-      - echo Creating imagedefinitions.json file...
-      - echo "[{\"name\":\"edureka2\",\"imageUri\":\"$REPOSITORY_URI:$CODEBUILD_RESOLVED_SOURCE_VERSION\"}]" > imagedefinitions.json
-
+      - echo Build completed on `date`
+      - docker push <your-ecr-uri>:latest
+      - docker push <your-ecr-uri>:$CODEBUILD_RESOLVED_SOURCE_VERSION
 artifacts:
   files:
     - imagedefinitions.json
-    - '**/*'
