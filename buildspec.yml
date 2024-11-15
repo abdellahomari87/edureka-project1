@@ -18,6 +18,8 @@ phases:
       - echo "Tagging the Docker image"
       - mkdir -p build  # Crée le dossier "build" si ce n'est pas déjà fait
       - echo "Sample build output" > build/output.txt  # Ajoute un fichier dans le dossier "build" pour tester
+      - echo "Generating imagedefinitions.json file"
+      - printf '[{"name":"my-service-name","imageUri":"<your-image-uri>"}]' > build/imagedefinitions.json
 
   post_build:
     commands:
