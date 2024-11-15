@@ -3,16 +3,26 @@ version: 0.2
 phases:
   install:
     commands:
-      - echo "Install phase: setting up dependencies"
+      - echo Installing dependencies
+      - apt-get update && apt-get install -y zip
+
+  pre_build:
+    commands:
+      - echo Preparing build environment
+      - aws --version
+
   build:
     commands:
-      - echo "Build phase: compiling code"
-      - ls -la
+      - echo Starting the build phase
+      - echo "Building the application"
+      - echo "Tagging the Docker image"
+
   post_build:
     commands:
-      - echo "Post-build phase: finalizing build process"
+      - echo Build completed
 
 artifacts:
   files:
-    - "**/*"
-  discard-paths: yes
+    - '**/*'
+  discard-paths: no
+  base-directory: build
