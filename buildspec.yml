@@ -2,22 +2,17 @@ version: 0.2
 
 phases:
   install:
-    runtime-versions:
-      python: 3.9
     commands:
-      - echo "Starting install phase"
-      - echo "Installing dependencies"
-      - pip install --upgrade pip
+      - echo "Install phase: setting up dependencies"
   build:
     commands:
-      - echo "Starting build phase"
-      - echo "This is where the build process happens"
+      - echo "Build phase: compiling code"
       - ls -la
-      - echo "Build phase completed successfully"
   post_build:
     commands:
-      - echo "Starting post-build phase"
-      - echo "Post-build actions completed"
+      - echo "Post-build phase: finalizing build process"
+
 artifacts:
   files:
     - "**/*"
+  discard-paths: yes
