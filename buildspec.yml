@@ -16,6 +16,8 @@ phases:
       - echo Starting the build phase
       - echo "Building the application"
       - echo "Tagging the Docker image"
+      - mkdir -p build  # Crée le dossier "build" si ce n'est pas déjà fait
+      - echo "Sample build output" > build/output.txt  # Ajoute un fichier dans le dossier "build" pour tester
 
   post_build:
     commands:
