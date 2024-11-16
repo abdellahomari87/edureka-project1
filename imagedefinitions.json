@@ -1,0 +1,6 @@
+[
+  {
+    "name": "my-ecs-service",
+    "imageUri": "nginx:latest"
+  }
+]
