@@ -19,7 +19,7 @@ phases:
       - mkdir -p build  # Crée le dossier "build" si ce n'est pas déjà fait
       - echo "Sample build output" > build/output.txt  # Ajoute un fichier dans le dossier "build" pour tester
       - echo "Generating imagedefinitions.json file"
-      - printf '[{"name":"my-app-repo","imageUri":"600897147573.dkr.ecr.us-east-1.amazonaws.com/my-app-repo"}]' > build/imagedefinitions.json
+      - printf '[{"name":"nginx:latest","imageUri":"600897147573.dkr.ecr.us-east-1.amazonaws.com/my-app-repo"}]' > build/imagedefinitions.json
 
   post_build:
     commands:
