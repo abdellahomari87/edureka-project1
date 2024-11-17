@@ -13,23 +13,21 @@ phases:
 
   build:
     commands:
-      build:
-  commands:
-    - echo Starting the build phase
-    - echo "Building the Docker image"
-    - docker build -t my-ecr-repo:latest .
+      - echo Starting the build phase
+      - echo "Building the Docker image"
+      - docker build -t my-ecr-repo:latest .
 
-    - echo "Tagging the Docker image for Amazon ECR"
-    - docker tag my-ecr-repo:latest 600897147573.dkr.ecr.us-east-1.amazonaws.com/my-app-repo:latest
+      - echo "Tagging the Docker image for Amazon ECR"
+      - docker tag my-ecr-repo:latest 600897147573.dkr.ecr.us-east-1.amazonaws.com/my-app-repo:latest
 
-    - echo "Logging into Amazon ECR"
-    - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 600897147573.dkr.ecr.us-east-1.amazonaws.com/my-app-repo
+      - echo "Logging into Amazon ECR"
+      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 600897147573.dkr.ecr.us-east-1.amazonaws.com/my-app-repo
 
-    - echo "Pushing the Docker image to Amazon ECR"
-    - docker push 600897147573.dkr.ecr.us-east-1.amazonaws.com/my-app-repo:latest
+      - echo "Pushing the Docker image to Amazon ECR"
+      - docker push 600897147573.dkr.ecr.us-east-1.amazonaws.com/my-app-repo:latest
 
-    - echo "Generating imagedefinitions.json file"
-    - printf '[{"name":"my-container","imageUri":"600897147573.dkr.ecr.us-east-1.amazonaws.com/my-app-repo:latest"}]' > imagedefinitions.json
+      - echo "Generating imagedefinitions.json file"
+      - printf '[{"name":"my-container","imageUri":"600897147573.dkr.ecr.us-east-1.amazonaws.com/my-app-repo:latest"}]' > imagedefinitions.json
 
 
   post_build:
