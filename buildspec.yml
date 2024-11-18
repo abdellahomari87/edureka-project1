@@ -14,27 +14,24 @@ phases:
   build:
     commands:
       - echo Starting the build phase
-      - echo "Authenticating with Docker Hub"
-      - echo "$DOCKERHUB_PASSWORD" | docker login --username "$DOCKERHUB_USERNAME" --password-stdin
+      - echo Ensuring the build directory exists
+      - mkdir -p build  # Crée le répertoire `build` s'il n'existe pas
       - echo "Building the Docker image"
       - docker build -t my-ecr-repo:latest .
-
       - echo "Tagging the Docker image for Amazon ECR"
       - docker tag my-ecr-repo:latest 600897147573.dkr.ecr.us-east-1.amazonaws.com/my-app-repo:latest
-
       - echo "Logging into Amazon ECR"
       - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 600897147573.dkr.ecr.us-east-1.amazonaws.com/my-app-repo
-
       - echo "Pushing the Docker image to Amazon ECR"
       - docker push 600897147573.dkr.ecr.us-east-1.amazonaws.com/my-app-repo:latest
-
       - echo "Generating imagedefinitions.json file"
-      - printf '[{"name":"my-container","imageUri":"600897147573.dkr.ecr.us-east-1.amazonaws.com/my-app-repo:latest"}]' > imagedefinitions.json
-
+      - printf '[{"name":"my-container","imageUri":"600897147573.dkr.ecr.us-east-1.amazonaws.com/my-app-repo:latest"}]' > build/imagedefinitions.json
 
   post_build:
     commands:
       - echo Build completed
+      - echo Verifying the contents of the build directory
+      - ls -R build  # Liste récursive des fichiers dans le répertoire `build`
 
 artifacts:
   files:
