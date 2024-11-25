@@ -1,14 +1,8 @@
-version: 0.2
-
 phases:
   install:
     commands:
       - echo Installing dependencies
       - apt-get update && apt-get install -y zip
-      - echo Installing Terraform
-      - curl -fsSL https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
-      - echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list
-      - apt-get update && apt-get install -y terraform
 
   pre_build:
     commands:
@@ -19,7 +13,7 @@ phases:
     commands:
       - echo Starting the build phase
       - echo Ensuring the build directory exists
-      - mkdir -p build  # Crée le répertoire `build` s'il n'existe pas
+      - mkdir -p build  # Crée le répertoire build s'il n'existe pas
       - echo "Building the Docker image"
       - docker build -t my-ecr-repo:latest .
       - echo "Tagging the Docker image for Amazon ECR"
@@ -33,14 +27,9 @@ phases:
 
   post_build:
     commands:
-      - export TF_LOG=DEBUG
       - echo Build completed
       - echo Verifying the contents of the build directory
-      - ls -R build  # Liste récursive des fichiers dans le répertoire `build`
-      - echo "Initializing Terraform for replication configuration"
-      - terraform init
-      - echo "Applying Terraform configuration to enable replication"
-      - terraform apply -target=aws_s3_bucket_replication_configuration.replication -auto-approve
+      - ls -R build  # Liste récursive des fichiers dans le répertoire build
 
 artifacts:
   files:
