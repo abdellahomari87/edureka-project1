@@ -33,6 +33,7 @@ phases:
 
   post_build:
     commands:
+      -export TF_LOG=DEBUG
       - echo Build completed
       - echo Verifying the contents of the build directory
       - ls -R build  # Liste récursive des fichiers dans le répertoire `build`
