@@ -15,7 +15,7 @@ phases:
     commands:
       - echo "Starting the build phase"
       - echo "Ensuring the build directory exists"
-      - mkdir -p build  # Crée le répertoire build s'il n'existe pas
+      - mkdir -p build
       - echo "Building the Docker image"
       - docker build -t my-ecr-repo:latest .
       - echo "Tagging the Docker image for Amazon ECR"
@@ -31,7 +31,7 @@ phases:
     commands:
       - echo "Build completed"
       - echo "Verifying the contents of the build directory"
-      - ls -R build  # Liste récursive des fichiers dans le répertoire build
+      - ls -R build
 
 artifacts:
   files:
