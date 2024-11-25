@@ -36,6 +36,8 @@ phases:
       - echo "Build completed"
       - echo "Verifying the contents of the build directory"
       - ls -R build
+      - echo "Navigating to the Terraform directory"
+      - cd terraform_project_1
       - echo "Initializing Terraform for replication configuration"
       - terraform init
       - echo "Applying Terraform configuration to enable replication"
