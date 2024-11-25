@@ -1,18 +1,20 @@
+version: 0.2
+
 phases:
   install:
     commands:
-      - echo Installing dependencies
+      - echo "Installing dependencies"
       - apt-get update && apt-get install -y zip
 
   pre_build:
     commands:
-      - echo Preparing build environment
+      - echo "Preparing build environment"
       - aws --version
 
   build:
     commands:
-      - echo Starting the build phase
-      - echo Ensuring the build directory exists
+      - echo "Starting the build phase"
+      - echo "Ensuring the build directory exists"
       - mkdir -p build  # Crée le répertoire build s'il n'existe pas
       - echo "Building the Docker image"
       - docker build -t my-ecr-repo:latest .
@@ -27,8 +29,8 @@ phases:
 
   post_build:
     commands:
-      - echo Build completed
-      - echo Verifying the contents of the build directory
+      - echo "Build completed"
+      - echo "Verifying the contents of the build directory"
       - ls -R build  # Liste récursive des fichiers dans le répertoire build
 
 artifacts:
