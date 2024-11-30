@@ -4,7 +4,7 @@ phases:
   install:
     commands:
       - echo "Installing dependencies"
-      - apt-get update && apt-get install -y zip
+      - apt-get update && apt-get install -y zip curl unzip
       - echo "Installing Terraform"
       - curl -fsSL https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
       - echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list
@@ -12,40 +12,29 @@ phases:
 
   pre_build:
     commands:
-      - echo "Preparing build environment"
+      - echo "Checking AWS CLI version"
       - aws --version
+      - echo "Verifying Terraform version"
+      - terraform -version
 
   build:
     commands:
-      - echo "Starting the build phase"
-      - echo "Ensuring the build directory exists"
-      - mkdir -p build
-      - echo "Building the Docker image"
-      - docker build -t my-ecr-repo:latest .
-      - echo "Tagging the Docker image for Amazon ECR"
-      - docker tag my-ecr-repo:latest 600897147573.dkr.ecr.us-east-1.amazonaws.com/my-app-repo:latest
-      - echo "Logging into Amazon ECR"
-      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 600897147573.dkr.ecr.us-east-1.amazonaws.com/my-app-repo
-      - echo "Pushing the Docker image to Amazon ECR"
-      - docker push 600897147573.dkr.ecr.us-east-1.amazonaws.com/my-app-repo:latest
-      - echo "Generating imagedefinitions.json file"
-      - printf '[{"name":"my-container","imageUri":"600897147573.dkr.ecr.us-east-1.amazonaws.com/my-app-repo:latest"}]' > build/imagedefinitions.json
+      - echo "Navigating to the Terraform project directory"
+      - if [ -d "terraform_project" ]; then cd terraform_project; else echo "Directory terraform_project does not exist!"; exit 1; fi
+      - echo "Initializing Terraform"
+      - terraform init
+      - echo "Validating Terraform configuration"
+      - terraform validate
+      - echo "Applying Terraform configuration"
+      - terraform apply -auto-approve
 
   post_build:
     commands:
-      - echo "Build completed"
-      - echo "Verifying the contents of the build directory"
-      - ls -R build
-      - echo "Navigating to the Terraform directory"
-      - if [ -d "terraform_project" ]; then cd terraform_project; else echo "Directory terraform_project does not exist!"; exit 1; fi
-      - echo "Initializing Terraform for replication configuration"
-      - terraform init
-      - echo "Applying Terraform configuration to enable replication"
-      - terraform apply -target=aws_s3_bucket_replication_configuration.replication -auto-approve
+      - echo "Terraform apply completed"
+      - echo "Checking S3 bucket replication configuration"
+      - aws s3api get-bucket-replication --bucket <Secondary-S3-Bucket> || echo "No replication configuration found"
 
 artifacts:
   files:
     - '**/*'
-    - imagedefinitions.json
   discard-paths: no
-  base-directory: build
