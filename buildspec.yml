@@ -37,7 +37,7 @@ phases:
       - echo "Verifying the contents of the build directory"
       - ls -R build
       - echo "Navigating to the Terraform directory"
-      - cd terraform_project_1
+      - if [ -d "terraform_project" ]; then cd terraform_project; else echo "Directory terraform_project does not exist!"; exit 1; fi
       - echo "Initializing Terraform for replication configuration"
       - terraform init
       - echo "Applying Terraform configuration to enable replication"
