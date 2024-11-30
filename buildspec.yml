@@ -9,6 +9,8 @@ phases:
       - curl -fsSL https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
       - echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list
       - apt-get update && apt-get install -y terraform
+      - echo "Copying Terraform project from the host machine"
+      - cp -R /path/to/local/terraform_project .
 
   pre_build:
     commands:
@@ -20,7 +22,7 @@ phases:
   build:
     commands:
       - echo "Navigating to the Terraform project directory"
-      - if [ -d "terraform_project" ]; then cd terraform_project; else echo "Directory terraform_project does not exist!"; exit 1; fi
+      - cd terraform_project
       - echo "Initializing Terraform"
       - terraform init
       - echo "Validating Terraform configuration"
@@ -32,7 +34,7 @@ phases:
     commands:
       - echo "Terraform apply completed"
       - echo "Checking S3 bucket replication configuration"
-      - aws s3api get-bucket-replication --bucket <Secondary-S3-Bucket> || echo "No replication configuration found"
+      - aws s3api get-bucket-replication --bucket <Secondary-S3-Bucket> || true
 
 artifacts:
   files:
